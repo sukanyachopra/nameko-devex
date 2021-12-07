@@ -3,8 +3,8 @@ HTMLCOV_DIR ?= htmlcov
 TAG ?= dev
 IMAGES := orders products gateway
 
-CF_ORG ?= good
-CF_SPACE ?= morning
+CF_ORG ?= orbit
+CF_SPACE ?= stage
 CF_APP ?= nameko-devex
 
 install-dependencies:
@@ -71,7 +71,7 @@ cf_target:
 	cf target -o $(CF_ORG) -s $(CF_SPACE)
 
 cf_cs_postgres:
-	cf cs postgresql 11-7-0 $(CF_APP)_postgres
+	cf cs aws-rds-postgres basic $(CF_APP)_postgres
 	echo "Waiting for service to be created"
 	for i in $$(seq 1 90); do \
 		cf service $(CF_APP)_postgres | grep  "create succeeded" 2> /dev/null && break; \
@@ -87,7 +87,7 @@ cf_ds_postgres:
 	done 
 
 cf_cs_rabbitmq:
-	cf cs rabbitmq 3-8-1 $(CF_APP)_rabbitmq
+	cf cs p.rabbitmq simple $(CF_APP)_rabbitmq
 	echo "Waiting for service to be created"
 	for i in $$(seq 1 90); do \
 		cf service $(CF_APP)_rabbitmq | grep  "create succeeded" 2> /dev/null && break; \
@@ -103,7 +103,7 @@ cf_ds_rabbitmq:
 	done 
 
 cf_cs_redis:
-	cf cs redis 5-0-7 $(CF_APP)_redis
+	cf cs p.redis basic $(CF_APP)_redis
 	echo "Waiting for service to be created"
 	for i in $$(seq 1 90); do \
 		cf service $(CF_APP)_redis | grep  "create succeeded" 2> /dev/null && break; \
